@@ -1,0 +1,9 @@
+{
+  "short_name": "InventoryDeck",
+  "name": "Inventory Deck Management System",
+  "start_url": "dashboard.php",
+  "background_color": "#7dd3fc",
+  "theme_color": "#0284c7",
+  "display": "standalone",
+  "orientation": "portrait"
+}
