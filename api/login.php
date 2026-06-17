@@ -1,180 +1,190 @@
 <?php
 include 'db.php';
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+session_start();
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    try {
-        // 1. Fetch all users from your Asia-Southeast Firebase node
-        $all_users = firebase_request('users');
-        $user_found = false;
+    if (isset($conn)) {
+        $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if ($all_users) {
-            // Firebase returns data as an associative array where $id is the alphanumeric unique key string
-            foreach ($all_users as $id => $user) {
-                if (isset($user['username']) && strtolower($user['username']) === strtolower($username)) {
-                    // 2. Verify the hashed password securely
-                    if (password_verify($password, $user['password'])) {
-                        $_SESSION['user_id'] = $id; // Save the unique Firebase string ID as the session pointer
-                        $_SESSION['username'] = $user['username'];
-                        
-                        $user_found = true;
-                        header("Location: dashboard.php");
-                        exit;
-                    } else {
-                        $message = "Oops! Wrong password.";
-                        $user_found = true;
-                        break;
-                    }
-                }
+        if ($user = $result->fetch_assoc()) {
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $username;
+                header("Location: dashboard.php");
+                exit;
+            } else {
+                $message = "Oops! Wrong password.";
             }
-        }
-
-        if (!$user_found) {
+        } else {
             $message = "We couldn't find that user.";
         }
-
-    } catch (Exception $e) {
-        $message = "Login Error: " . $e->getMessage();
+    } else {
+        $message = "Database connection error.";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - Inventory System</title>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif; 
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
+        /* Force background to bypass any active cache structures */
+        html, body, body.force-pink-body { 
+            font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif !important; 
+            background: linear-gradient(135deg, #fff0f2 0%, #fbcfe8 100%) !important; 
+            display: flex !important; 
+            justify-content: center !important; 
+            align-items: center !important; 
+            height: 100vh !important; 
+            margin: 0 !important; 
+            width: 100vw !important;
         }
-        .form-container { 
-            background: #fff; 
-            padding: 50px 45px; \
-            border-radius: 28px; 
-            box-shadow: 0 10px 30px rgba(2, 132, 199, 0.1); 
-            width: 460px; 
-            text-align: center;
-            border: 1px solid #e0f2fe;
-            box-sizing: border-box;
-        }
-        h2 { color: #1e293b; margin-bottom: 12px; font-size: 28px; font-weight: 700; }
-        p.subtitle { color: #64748b; margin-bottom: 35px; font-size: 15px; margin-top: 0; }
-        
-        .password-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        input { 
-            width: 100%; 
-            padding: 16px; 
-            margin: 12px 0; 
-            border: 2px solid #f1f5f9; 
-            border-radius: 16px; 
-            box-sizing: border-box; 
-            font-size: 15px; 
-            background: #f8fafc;
-            transition: all 0.2s ease;
-            color: #1e293b;
-            font-family: inherit;
-        }
-        input:focus {
-            border-color: #38bdf8;
-            background: #fff;
-            outline: none;
-        }
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #0284c7;
-            font-size: 12px;
-            user-select: none;
-            background: #e0f2fe;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-weight: bold;
-        }
-        .submit-btn { 
-            width: 100%;
-            padding: 16px;
-            margin-top: 25px;
-            background: #0284c7; 
-            color: white; 
-            border: none; \
-            border-radius: 16px;
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 16px; 
-            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.2);
-            transition: background 0.2s ease;
-            font-family: inherit;
-        }
-        .submit-btn:hover { background: #0369a1; }
-        
-        .hr-container {
-            margin: 30px 0 20px 0;
-            color: #94a3b8;
-            font-size: 13px;
-            position: relative;
+
+        /* Highly-specific nested selectors to override external style.css */
+        body.force-pink-body .custom-pink-wrapper .form-container { 
+            background: #ffffff !important; 
+            padding: 50px 45px !important; 
+            border-radius: 28px !important; 
+            box-shadow: 0 10px 30px rgba(244, 143, 177, 0.15) !important; 
+            width: 460px !important; 
+            text-align: center !important;
+            border: 1px solid #ffe4e6 !important;
+            box-sizing: border-box !important;
+            display: block !important;
         }
         
-        .reg-btn { 
-            display: inline-block;
-            width: 100%;
-            padding: 14px;
-            background: transparent; 
-            color: #0284c7; 
-            border: 2px solid #0284c7; 
-            border-radius: 16px;
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 14px; 
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            font-family: inherit;
+        body.force-pink-body .custom-pink-wrapper h2 { color: #1e293b !important; margin-bottom: 12px !important; font-size: 28px !important; font-weight: 700 !important; margin-top: 0 !important;}
+        body.force-pink-body .custom-pink-wrapper p.subtitle { color: #94a3b8 !important; margin-bottom: 35px !important; font-size: 15px !important; margin-top: 0 !important; }
+        
+        body.force-pink-body .custom-pink-wrapper .password-wrapper {
+            position: relative !important;
+            width: 100% !important;
         }
-        .reg-btn:hover { background: #f0f9ff; }
-        .error-msg { color: #ef4444; background: #fef2f2; padding: 12px; border-radius: 12px; font-size: 14px; margin-bottom: 20px; border: 1px solid #fee2e2; text-align: left; }
+        
+        body.force-pink-body .custom-pink-wrapper input { 
+            width: 100% !important; 
+            padding: 16px !important; 
+            margin: 12px 0 !important; 
+            border: 2px solid #fff1f2 !important; 
+            border-radius: 16px !important; 
+            box-sizing: border-box !important; 
+            font-size: 15px !important; 
+            background: #fff8f9 !important;
+            transition: all 0.2s ease !important;
+            color: #334155 !important;
+            font-family: inherit !important;
+        }
+        body.force-pink-body .custom-pink-wrapper input:focus {
+            border-color: #f48fb1 !important;
+            background: #ffffff !important;
+            outline: none !important;
+            box-shadow: 0 0 0 4px rgba(244, 143, 177, 0.15) !important;
+        }
+        
+        body.force-pink-body .custom-pink-wrapper .toggle-password {
+            position: absolute !important;
+            right: 15px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            cursor: pointer !important;
+            color: #f48fb1 !important;
+            font-size: 12px !important;
+            user-select: none !important;
+            background: #fff0f2 !important;
+            padding: 6px 12px !important;
+            border-radius: 10px !important;
+            font-weight: bold !important;
+            transition: all 0.2s ease !important;
+            display: inline-block !important;
+        }
+        
+        /* Direct button targeting using body class reference */
+        body.force-pink-body .custom-pink-wrapper button.submit-btn { 
+            width: 100% !important; 
+            padding: 16px !important; 
+            margin-top: 25px !important;
+            background: #f48fb1 !important; 
+            color: white !important; 
+            border: none !important; 
+            border-radius: 16px !important; 
+            cursor: pointer !important; 
+            font-weight: bold !important; 
+            font-size: 16px !important;
+            box-shadow: 0 6px 16px rgba(244, 143, 177, 0.25) !important;
+            transition: transform 0.1s ease, background 0.2s ease !important;
+            font-family: inherit !important;
+            display: block !important;
+        }
+        body.force-pink-body .custom-pink-wrapper button.submit-btn:hover { background: #e91e63 !important; }
+        
+        body.force-pink-body .custom-pink-wrapper .hr-container {
+            display: flex !important;
+            align-items: center !important;
+            text-align: center !important;
+            margin: 35px 0 !important;
+            color: #94a3b8 !important;
+            font-size: 13px !important;
+        }
+        body.force-pink-body .custom-pink-wrapper .hr-container::before, 
+        body.force-pink-body .custom-pink-wrapper .hr-container::after {
+            content: '' !important;
+            flex: 1 !important;
+            border-bottom: 2px solid #fff1f2 !important;
+        }
+        
+        body.force-pink-body .custom-pink-wrapper .reg-btn { 
+            display: inline-block !important;
+            width: 100% !important;
+            padding: 15px !important;
+            background: transparent !important;
+            color: #f48fb1 !important;
+            border: 2px solid #f48fb1 !important;
+            border-radius: 16px !important;
+            text-decoration: none !important;
+            box-sizing: border-box !important;
+            font-weight: bold !important;
+            font-size: 15px !important;
+            transition: all 0.2s ease !important;
+            text-align: center !important;
+        }
+        body.force-pink-body .custom-pink-wrapper .reg-btn:hover { background: #f48fb1 !important; color: white !important; }
+        body.force-pink-body .custom-pink-wrapper .error-msg { color: #e11d48 !important; background: #fff1f2 !important; padding: 12px !important; border-radius: 12px !important; font-size: 14px !important; margin-bottom: 20px !important; border: 1px solid #ffe4e6 !important; }
     </style>
 </head>
-<body>
-    <div class="form-container">
-        <h2>Welcome Back</h2>
-        <p class="subtitle">Log in to manage your inventory space</p>
-        
-        <?php if($message) echo "<div class='error-msg'>$message</div>"; ?>
-        
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
+<body class="force-pink-body">
+    <div class="custom-pink-wrapper">
+        <div class="form-container">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Log in to manage your inventory space</p>
             
-            <div class="password-wrapper">
-                <input type="password" id="login-pass" name="password" placeholder="Password" required>
-                <span class="toggle-password" onclick="togglePassword('login-pass', this)">Show</span>
-            </div>
+            <?php if(!empty($message)) echo "<div class='error-msg'>$message</div>"; ?>
             
-            <button type="submit" class="submit-btn">Log In</button>
-        </form>
-        
-        <div class="hr-container">New to the platform?</div>
-        
-        <a href="register.php" class="reg-btn">Create an Account</a>
+            <form action="login.php" method="POST">
+                <input type="text" name="username" placeholder="Username" required>
+                
+                <div class="password-wrapper">
+                    <input type="password" id="login-pass" name="password" placeholder="Password" required>
+                    <span class="toggle-password" onclick="togglePassword('login-pass', this)">Show</span>
+                </div>
+                
+                <button type="submit" class="submit-btn">Log In</button>
+            </form>
+            
+            <div class="hr-container">New to the platform?</div>
+            
+            <a href="register.php" class="reg-btn">Create an Account</a>
+        </div>
     </div>
 
     <script>
