@@ -1,114 +1,57 @@
-/* ==========================================================================
-   INVENTORY DECK - SOFT PASTEL CORE STYLES
-   ========================================================================== */
-
-/* Clickable Summary Metric Cards */
-.clickable-card {
-    cursor: pointer;
-    transition: all 0.2s ease;
+body { 
+    font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif !important; 
+    background: linear-gradient(135deg, #fff0f2 0%, #fbcfe8 100%) !important; 
+    display: flex !important; 
+    justify-content: center !important; 
+    align-items: center !important; 
+    height: 100vh !important; 
+    margin: 0 !important; 
 }
-.clickable-card:hover {
-    transform: translateY(-3px);
-    border-color: #fbcfe8;
+.form-container { 
+    background: #ffffff !important; 
+    padding: 50px 45px !important; 
+    border-radius: 28px !important; 
+    box-shadow: 0 10px 30px rgba(244, 143, 177, 0.15) !important; 
+    width: 460px !important; 
+    text-align: center !important;
+    border: 1px solid #ffe4e6 !important;
+    box-sizing: border-box !important;
 }
-.clickable-card.active-tab {
-    background: #fff0f2;
-    border: 2px solid #f48fb1;
-    box-shadow: 0 8px 20px rgba(244, 143, 177, 0.15);
+h2 { color: #1e293b !important; margin-bottom: 12px !important; font-size: 28px !important; font-weight: 700 !important; }
+p.subtitle { color: #94a3b8 !important; margin-bottom: 35px !important; font-size: 15px !important; margin-top: 0 !important; }
+input { 
+    width: 100% !important; 
+    padding: 16px !important; 
+    margin: 12px 0 !important; 
+    border: 2px solid #fff1f2 !important; 
+    border-radius: 16px !important; 
+    box-sizing: border-box !important; 
+    font-size: 15px !important; 
+    background: #fff8f9 !important;
+    color: #334155 !important;
 }
-
-/* Elegant Soft Pastel Transaction Table Layout */
-.history-panel {
-    background: white;
-    border-radius: 24px;
-    padding: 30px;
-    border: 2px solid #fff1f2;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.02);
-    width: 100%;
-    box-sizing: border-box;
+button.submit-btn { 
+    width: 100% !important; 
+    padding: 16px !important; 
+    margin-top: 25px !important;
+    background: #f48fb1 !important; 
+    color: white !important; 
+    border: none !important; 
+    border-radius: 16px !important; 
+    cursor: pointer !important; 
+    font-weight: bold !important; 
+    font-size: 16px !important;
+    box-shadow: 0 6px 16px rgba(244, 143, 177, 0.25) !important;
 }
-.history-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 14px;
-}
-.history-table th {
-    background: #fff5f6;
-    color: #f48fb1;
-    text-align: left;
-    padding: 14px;
-    font-weight: bold;
-    border-bottom: 2px solid #fff1f2;
-}
-.history-table td {
-    padding: 14px;
-    border-bottom: 1px solid #fff1f2;
-    color: #5a6578;
-}
-.history-table tr:hover td {
-    background: #fffafb;
-}
-.revenue-tag {
-    color: #2e7d32;
-    font-weight: bold;
-    background: #e6f7ed;
-    padding: 4px 10px;
-    border-radius: 8px;
-    display: inline-block;
-}
-
-/* ==========================================================================
-   NEW ADDITIONS: MODAL ACTIONS & TIMELINE LAYOUT BUTTONS
-   ========================================================================== */
-
-/* Dual Button Form Split Container */
-.giant-warning-actions-row {
-    display: flex;
-    gap: 15px;
-    width: 100%;
-    margin-top: 20px;
-}
-
-/* LEFT SIDE BUTTON: Soft Slate Ignore Action */
-.btn-warning-ignore {
-    flex: 1;
-    background: #4a5568; /* Soft charcoal slate */
-    color: #ffffff;
-    padding: 15px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.2s ease, transform 0.1s ease;
-}
-.btn-warning-ignore:hover {
-    background: #2d3748;
-}
-.btn-warning-ignore:active {
-    transform: scale(0.98);
-}
-
-/* RIGHT SIDE BUTTON: Pastel Warning Red Restock Action */
-.btn-warning-restock-submit {
-    flex: 1;
-    background: #f48fb1; /* Signature Pastel Accent */
-    color: #ffffff;
-    padding: 15px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    box-shadow: 0 6px 15px rgba(244, 143, 177, 0.25);
-    transition: background 0.2s ease, transform 0.1s ease;
-}
-.btn-warning-restock-submit:hover {
-    background: #e91e63; /* Turns deep vibrant pink on hover */
-}
-.btn-warning-restock-submit:active {
-    transform: scale(0.98);
+.reg-btn { 
+    display: inline-block !important;
+    width: 100% !important;
+    padding: 15px !important;
+    background: transparent !important;
+    color: #f48fb1 !important;
+    border: 2px solid #f48fb1 !important;
+    border-radius: 16px !important;
+    text-decoration: none !important;
+    font-weight: bold !important;
+    text-align: center;
 }
