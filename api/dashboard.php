@@ -1,5 +1,5 @@
 <?php
-// --- 1. DECLARE TIMELINE & MATH HELPERS FIRST SO THE CORE ENGINE AND HTML CAN CALL THEM SAFE ---
+// --- 1. HELPER MATHEMATICS FUNCTIONS (MOVED TO TOP TO PREVENT FATAL RUNTIME ERRORS) ---
 function number_style_render($val) {
     return number_format(floatval($val), 2, '.', ',');
 }
@@ -20,7 +20,7 @@ function format_time_ago($timestamp_str) {
     return date('M d, g:i A', $time);
 }
 
-// --- 2. INCLUDE WORKING FIREBASE REWRITE ENGINE BACKEND ---
+// --- 2. INCLUDE CORE FIREBASE HANDLER ENGINE ---
 include 'dashboard_backend.php'; 
 ?>
 <!DOCTYPE html>
