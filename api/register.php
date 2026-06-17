@@ -31,7 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $show_success_modal = true;
             }
         } catch (Exception $e) {
-            $message = "Database connection offline.";
+            // DIAGNOSTIC UPDATE: This will print the actual error text instead of a generic message
+            $message = "Database Error: " . $e->getMessage();
         }
     }
 }
@@ -166,7 +167,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <form action="register.php" method="POST">
             <input type="text" name="username" placeholder="Choose a Username" required>
-            
+            <input type="text" placeholder="Business Type / Job" required>
+
             <div class="password-wrapper">
                 <input type="password" id="reg-pass" name="password" placeholder="Create Password" required>
                 <span class="toggle-password" onclick="togglePassword('reg-pass', this)">Show</span>
