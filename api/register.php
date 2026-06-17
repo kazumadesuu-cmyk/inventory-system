@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $checkStmt->execute();
         $checkStmt->store_result();
 
-        if ($checkStmt->num_slides > 0 || $checkStmt->num_rows > 0) {
+        if ($checkStmt->num_rows > 0) {
             $message = "Username is already taken!";
         } else {
             $stmt = $conn->prepare("INSERT INTO users (username, business_type, password) VALUES (?, ?, ?)");
@@ -42,7 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Create Account - Inventory System</title>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { 
             font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif; 
@@ -88,26 +87,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: #fff;
             outline: none;
         }
-        /* Extra padding right on password fields to ensure text never runs under the eye icon */
-        input[type="password"], input[type="text"].pass-input {
-            padding-right: 50px;
-        }
         
-        /* Modern positioning settings for the eyes */
+        /* Exact text "Show" button styling matching login page */
         .toggle-password {
             position: absolute;
-            right: 20px;
+            right: 15px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #b1bccc;
-            font-size: 16px;
+            color: #718096;
+            font-size: 12px;
             user-select: none;
-            transition: color 0.2s ease;
-            z-index: 10;
-        }
-        .toggle-password:hover {
-            color: #f48fb1;
+            background: #ffe4e6;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: bold;
         }
         
         button.submit-btn { 
@@ -171,13 +165,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" name="business_type" placeholder="Business Type / Job" required>
             
             <div class="password-wrapper">
-                <input type="password" id="reg-pass" name="password" class="pass-input" placeholder="Create Password" required>
-                <i class="fa-regular fa-eye toggle-password" onclick="toggleRegisterPassword('reg-pass', this)"></i>
+                <input type="password" id="reg-pass" name="password" placeholder="Create Password" required>
+                <span class="toggle-password" onclick="togglePassword('reg-pass', this)">Show</span>
             </div>
             
             <div class="password-wrapper">
-                <input type="password" id="confirm-pass" name="confirm_password" class="pass-input" placeholder="Confirm Password" required>
-                <i class="fa-regular fa-eye toggle-password" onclick="toggleRegisterPassword('confirm-pass', this)"></i>
+                <input type="password" id="confirm-pass" name="confirm_password" placeholder="Confirm Password" required>
+                <span class="toggle-password" onclick="togglePassword('confirm-pass', this)">Show</span>
             </div>
             
             <button type="submit" class="submit-btn">Get Started</button>
@@ -189,19 +183,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-        function toggleRegisterPassword(inputId, iconElement) {
+        // Exact script logic from your login page applied here
+        function togglePassword(inputId, element) {
             var input = document.getElementById(inputId);
-            
             if (input.type === "password") {
                 input.type = "text";
-                // Swaps classes to solid slashed eye when visible
-                iconElement.classList.remove("fa-regular", "fa-eye");
-                iconElement.classList.add("fa-solid", "fa-eye-slash");
+                element.textContent = "Hide";
             } else {
                 input.type = "password";
-                // Swaps back to clean outlined regular eye when hidden
-                iconElement.classList.remove("fa-solid", "fa-eye-slash");
-                iconElement.classList.add("fa-regular", "fa-eye");
+                element.textContent = "Show";
             }
         }
     </script>
