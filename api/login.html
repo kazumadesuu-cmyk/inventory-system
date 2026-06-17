@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Inventory System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { 
+            font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif !important; 
+            background: linear-gradient(135deg, #fff0f2 0%, #fbcfe8 100%) !important; 
+            display: flex !important; 
+            justify-content: center !important; 
+            align-items: center !important; 
+            height: 100vh !important; 
+            margin: 0 !important; 
+            width: 100vw !important;
+        }
+
+        .form-container { 
+            background: #ffffff !important; 
+            padding: 50px 45px !important; 
+            border-radius: 28px !important; 
+            box-shadow: 0 10px 30px rgba(244, 143, 177, 0.15) !important; 
+            width: 460px !important; 
+            text-align: center !important;
+            border: 1px solid #ffe4e6 !important;
+            box-sizing: border-box !important;
+        }
+        
+        h2 { color: #1e293b !important; margin-bottom: 12px !important; font-size: 28px !important; font-weight: 700 !important; margin-top: 0 !important;}
+        p.subtitle { color: #94a3b8 !important; margin-bottom: 35px !important; font-size: 15px !important; margin-top: 0 !important; }
+        
+        .password-wrapper {
+            position: relative !important;
+            width: 100% !important;
+        }
+        
+        input { 
+            width: 100% !important; 
+            padding: 16px !important; 
+            margin: 12px 0 !important; 
+            border: 2px solid #fff1f2 !important; 
+            border-radius: 16px !important; 
+            box-sizing: border-box !important; 
+            font-size: 15px !important; 
+            background: #fff8f9 !important;
+            color: #334155 !important;
+            font-family: inherit !important;
+        }
+        
+        .toggle-password {
+            position: absolute !important;
+            right: 15px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            cursor: pointer !important;
+            color: #f48fb1 !important;
+            font-size: 12px !important;
+            user-select: none !important;
+            background: #fff0f2 !important;
+            padding: 6px 12px !important;
+            border-radius: 10px !important;
+            font-weight: bold !important;
+        }
+        
+        button.submit-btn { 
+            width: 100% !important; 
+            padding: 16px !important; 
+            margin-top: 25px !important;
+            background: #f48fb1 !important; 
+            color: white !important; 
+            border: none !important; 
+            border-radius: 16px !important; 
+            cursor: pointer !important; 
+            font-weight: bold !important; 
+            font-size: 16px !important;
+            box-shadow: 0 6px 16px rgba(244, 143, 177, 0.25) !important;
+            font-family: inherit !important;
+        }
+        button.submit-btn:hover { background: #e91e63 !important; }
+        
+        .hr-container {
+            display: flex !important;
+            align-items: center !important;
+            text-align: center !important;
+            margin: 35px 0 !important;
+            color: #94a3b8 !important;
+            font-size: 13px !important;
+        }
+        .hr-container::before, .hr-container::after {
+            content: '' !important;
+            flex: 1 !important;
+            border-bottom: 2px solid #fff1f2 !important;
+        }
+        .hr-container:not(:empty)::before { margin-right: .8em !important; }
+        .hr-container:not(:empty)::after { margin-left: .8em !important; }
+        
+        .reg-btn { 
+            display: inline-block !important;
+            width: 100% !important;
+            padding: 15px !important;
+            background: transparent !important;
+            color: #f48fb1 !important; 
+            border: 2px solid #f48fb1 !important; 
+            border-radius: 16px !important; 
+            text-decoration: none !important;
+            box-sizing: border-box !important;
+            font-weight: bold !important;
+            font-size: 15px !important;
+            text-align: center !important;
+        }
+        .reg-btn:hover { background: #f48fb1 !important; color: white !important; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Log in to manage your inventory space</p>
+        
+        <form action="dashboard_backend.php" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            
+            <div class="password-wrapper">
+                <input type="password" id="login-pass" name="password" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('login-pass', this)">Show</span>
+            </div>
+            
+            <button type="submit" class="submit-btn">Log In</button>
+        </form>
+        
+        <div class="hr-container">New to the platform?</div>
+        
+        <a href="register.html" class="reg-btn">Create an Account</a>
+    </div>
+
+    <script>
+        function togglePassword(inputId, element) {
+            var input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                element.textContent = "Hide";
+            } else {
+                input.type = "password";
+                element.textContent = "Show";
+            }
+        }
+    </script>
+</body>
+</html>
