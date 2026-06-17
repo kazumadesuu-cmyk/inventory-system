@@ -1,5 +1,5 @@
 <?php
-// --- 1. HELPER MATHEMATICS FUNCTIONS (MOVED TO TOP TO PREVENT FATAL RUNTIME ERRORS) ---
+// --- 1. DECLARE TIMELINE & MATH HELPERS FIRST SO THE CORE ENGINE AND HTML CAN CALL THEM SAFE ---
 function number_style_render($val) {
     return number_format(floatval($val), 2, '.', ',');
 }
@@ -20,7 +20,7 @@ function format_time_ago($timestamp_str) {
     return date('M d, g:i A', $time);
 }
 
-// --- 2. INCLUDE CORE FIREBASE HANDLER ENGINE ---
+// --- 2. INCLUDE WORKING FIREBASE REWRITE ENGINE BACKEND ---
 include 'dashboard_backend.php'; 
 ?>
 <!DOCTYPE html>
@@ -31,8 +31,8 @@ include 'dashboard_backend.php';
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* --- GLOBAL GRAPHICS & BACKGROUND --- */
-        body { 
+        /* --- CHANGED FROM 'body' TO A SPECIFIC CLASS SO IT DOES NOT LEAK INTO LOGIN OR REGISTER PAGES --- */
+        .dashboard-body-override { 
             font-family: 'Comfortaa', sans-serif; 
             margin: 0; padding: 40px 20px 40px 90px;
             background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%); 
@@ -64,11 +64,11 @@ include 'dashboard_backend.php';
             overflow: hidden;
         }
 
-        body.sidebar-open {
+        .dashboard-body-override.sidebar-open {
             padding-left: 270px;
         }
 
-        body.sidebar-open .sidebar-nav {
+        .dashboard-body-override.sidebar-open .sidebar-nav {
             width: 250px;
             align-items: flex-start;
             padding-left: 20px;
@@ -86,7 +86,7 @@ include 'dashboard_backend.php';
             transition: background 0.2s;
             align-self: center;
         }
-        body.sidebar-open .nav-toggle-btn {
+        .dashboard-body-override.sidebar-open .nav-toggle-btn {
             align-self: flex-end;
             margin-right: 20px;
         }
@@ -131,7 +131,7 @@ include 'dashboard_backend.php';
             opacity: 0;
             transition: opacity 0.2s;
         }
-        body.sidebar-open .nav-label {
+        .dashboard-body-override.sidebar-open .nav-label {
             opacity: 1;
         }
 
@@ -634,7 +634,7 @@ include 'dashboard_backend.php';
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
-<body>
+<body class="dashboard-body-override">
 
     <div class="sidebar-nav">
         <button class="nav-toggle-btn" onclick="toggleSidebarLayout()">☰</button>
