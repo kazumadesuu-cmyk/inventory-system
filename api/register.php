@@ -31,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $show_success_modal = true;
             }
         } catch (Exception $e) {
-            // DIAGNOSTIC UPDATE: This will print the actual error text instead of a generic message
             $message = "Database Error: " . $e->getMessage();
         }
     }
@@ -72,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             position: relative !important;
             width: 100% !important;
         }
-        input { 
+        input, select { 
             width: 100% !important; 
             padding: 16px !important; 
             margin: 12px 0 !important; 
@@ -85,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #334155 !important;
             font-family: inherit !important;
         }
-        input:focus {
+        input:focus, select:focus {
             border-color: #f48fb1 !important;
             background: #ffffff !important;
             outline: none !important;
@@ -167,7 +166,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <form action="register.php" method="POST">
             <input type="text" name="username" placeholder="Choose a Username" required>
-            <input type="text" placeholder="Business Type / Job" required>
+            
+            <select style="margin: 12px 0 !important;">
+                <option value="" disabled selected>Select Job / Recommendation Field...</option>
+                <option value="retail">Retail / Shop Owner</option>
+                <option value="ecom">E-commerce Vendor</option>
+                <option value="tech">Tech / Hardware Systems</option>
+                <option value="food">Food & Beverage / Cafe</option>
+                <option value="other">Personal Tracking / Hobbyist</option>
+            </select>
 
             <div class="password-wrapper">
                 <input type="password" id="reg-pass" name="password" placeholder="Create Password" required>
