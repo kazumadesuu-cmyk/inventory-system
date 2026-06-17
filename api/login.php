@@ -32,10 +32,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Welcome - Inventory System</title>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { 
             font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif; 
-            /* Premium soft pastel background gradient */
             background: linear-gradient(135deg, #fff5f5 0%, #fff0f3 100%); 
             display: flex; 
             justify-content: center; 
@@ -63,6 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input { 
             width: 100%; 
             padding: 16px; 
+            padding-right: 50px; /* Extends padding so text never overlaps the eye icon */
             margin: 12px 0; 
             border: 2px solid #fff1f2; 
             border-radius: 16px; 
@@ -79,19 +80,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             outline: none;
         }
         
+        /* Modern icon placement settings */
         .toggle-password {
             position: absolute;
-            right: 15px;
+            right: 20px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #718096;
-            font-size: 12px;
+            color: #b1bccc;
+            font-size: 16px;
             user-select: none;
-            background: #ffe4e6;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+        .toggle-password:hover {
+            color: #f48fb1; /* Icon turns pink when hovered */
         }
         
         button.submit-btn { 
@@ -160,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <div class="password-wrapper">
                 <input type="password" id="login-pass" name="password" placeholder="Password" required>
-                <span class="toggle-password" onclick="togglePassword('login-pass', this)">Show</span>
+                <i class="fa-regular fa-eye toggle-password" id="eye-icon" onclick="togglePassword()"></i>
             </div>
             
             <button type="submit" class="submit-btn">Log In</button>
@@ -172,14 +174,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-        function togglePassword(inputId, element) {
-            var input = document.getElementById(inputId);
+        function togglePassword() {
+            var input = document.getElementById("login-pass");
+            var icon = document.getElementById("eye-icon");
+            
             if (input.type === "password") {
                 input.type = "text";
-                element.textContent = "Hide";
+                // Changes the icon to a slashed eye when password is shown
+                icon.classList.remove("fa-regular", "fa-eye");
+                icon.classList.add("fa-solid", "fa-eye-slash");
             } else {
                 input.type = "password";
-                element.textContent = "Show";
+                // Changes it back to a standard regular eye when hidden
+                icon.classList.remove("fa-solid", "fa-eye-slash");
+                icon.classList.add("fa-regular", "fa-eye");
             }
         }
     </script>
