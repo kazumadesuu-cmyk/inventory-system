@@ -7,156 +7,147 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    if (isset($conn)) {
-        $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($user = $result->fetch_assoc()) {
-            if (password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $username;
-                header("Location: dashboard.php");
-                exit;
-            } else {
-                $message = "Oops! Wrong password.";
-            }
+    if ($user = $result->fetch_assoc()) {
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $username;
+            header("Location: dashboard.php");
+            exit;
         } else {
-            $message = "We couldn't find that user.";
+            $message = "Oops! Wrong password.";
         }
     } else {
-        $message = "Database connection error.";
+        $message = "We couldn't find that user.";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - Inventory System</title>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        html, body { 
-            font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif; 
-            /* Changed from light blue to the beautiful pastel pink gradient */
-            background: linear-gradient(135deg, #fff0f2 0%, #fbcfe8 100%); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
+        body { 
+            font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif !important; 
+            /* Forces the premium pastel background gradient to win */
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f3 100%) !important; 
+            display: flex !important; 
+            justify-content: center !important; 
+            align-items: center !important; 
+            height: 100vh !important; 
+            margin: 0 !important; 
         }
-
         .form-container { 
-            background: #ffffff; 
-            padding: 50px 45px; 
-            border-radius: 28px; 
-            /* Updated shadow to a soft pink hue */
-            box-shadow: 0 10px 30px rgba(244, 143, 177, 0.15); 
-            width: 460px; 
-            text-align: center;
-            border: 1px solid #ffe4e6;
-            box-sizing: border-box;
+            background: #fff !important; 
+            padding: 50px 45px !important; 
+            border-radius: 28px !important; 
+            box-shadow: 0 10px 30px rgba(244, 143, 177, 0.15) !important; 
+            width: 460px !important; 
+            text-align: center !important;
+            border: 1px solid #ffe4e6 !important;
+            box-sizing: border-box !important;
         }
-        
-        h2 { color: #1e293b; margin-bottom: 12px; font-size: 28px; font-weight: 700; margin-top: 0;}
-        p.subtitle { color: #94a3b8; margin-bottom: 35px; font-size: 15px; margin-top: 0; }
+        h2 { color: #4a5568 !important; margin-bottom: 12px !important; font-size: 28px !important; font-weight: 700 !important; }
+        p.subtitle { color: #a0aec0 !important; margin-bottom: 35px !important; font-size: 15px !important; margin-top: 0 !important; }
         
         .password-wrapper {
-            position: relative;
-            width: 100%;
+            position: relative !important;
+            width: 100% !important;
         }
-        
         input { 
-            width: 100%; 
-            padding: 16px; 
-            margin: 12px 0; 
-            border: 2px solid #fff1f2; 
-            border-radius: 16px; 
-            box-sizing: border-box; 
-            font-size: 15px; 
-            background: #fff8f9;
-            transition: all 0.2s ease;
-            color: #334155;
-            font-family: inherit;
+            width: 100% !important; 
+            padding: 16px !important; 
+            margin: 12px 0 !important; 
+            border: 2px solid #fff1f2 !important; 
+            border-radius: 16px !important; 
+            box-sizing: border-box !important; 
+            font-size: 15px !important; 
+            background: #fffafb !important;
+            transition: all 0.2s ease !important;
+            color: #4a5568 !important;
+            font-family: inherit !important;
         }
         input:focus {
-            border-color: #f48fb1;
-            background: #ffffff;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(244, 143, 177, 0.15);
+            border-color: #fbcfe8 !important;
+            background: #fff !important;
+            outline: none !important;
         }
         
         .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #f48fb1;
-            font-size: 12px;
-            user-select: none;
-            background: #fff0f2;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: all 0.2s ease;
+            position: absolute !important;
+            right: 15px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            cursor: pointer !important;
+            color: #718096 !important;
+            font-size: 12px !important;
+            user-select: none !important;
+            background: #ffe4e6 !important;
+            padding: 6px 12px !important;
+            border-radius: 10px !important;
+            font-weight: bold !important;
         }
         
-        /* Fixed Line 66: Changed from blue #0284c7 to pastel pink #f48fb1 */
+        /* Forces the pastel pink color onto the login button */
         button.submit-btn { 
-            width: 100%; 
-            padding: 16px; 
-            margin-top: 25px;
-            background: #f48fb1; 
-            color: white; 
-            border: none; 
-            border-radius: 16px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 16px;
-            box-shadow: 0 6px 16px rgba(244, 143, 177, 0.25);
-            transition: transform 0.1s ease, background 0.2s ease;
-            font-family: inherit;
+            width: 100% !important; 
+            padding: 16px !important; 
+            margin-top: 25px !important;
+            background: #f48fb1 !important; 
+            color: white !important; 
+            border: none !important; 
+            border-radius: 16px !important; 
+            cursor: pointer !important; 
+            font-weight: bold !important; 
+            font-size: 16px !important;
+            box-shadow: 0 6px 16px rgba(244, 143, 177, 0.25) !important;
+            transition: transform 0.1s ease, background 0.2s ease !important;
+            font-family: inherit !important;
         }
-        button.submit-btn:hover { background: #e91e63; }
+        button.submit-btn:hover { background: #f06292 !important; }
         
         .hr-container {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 35px 0;
-            color: #94a3b8;
-            font-size: 13px;
+            display: flex !important;
+            align-items: center !important;
+            text-align: center !important;
+            margin: 35px 0 !important;
+            color: #a0aec0 !important;
+            font-size: 13px !important;
         }
         .hr-container::before, .hr-container::after {
-            content: '';
-            flex: 1;
-            border-bottom: 2px solid #fff1f2;
+            content: '' !important;
+            flex: 1 !important;
+            border-bottom: 2px solid #fff1f2 !important;
         }
-        .hr-container:not(:empty)::before { margin-right: .8em; }
-        .hr-container:not(:empty)::after { margin-left: .8em; }
+        .hr-container:not(:empty)::before { margin-right: .8em !important; }
+        .hr-container:not(:empty)::after { margin-left: .8em !important; }
         
+        /* Forces the matching outline style for the link button */
         .reg-btn { 
-            display: inline-block;
-            width: 100%;
-            padding: 15px;
-            background: transparent;
-            /* Changed border and text from blue to pastel pink */
-            color: #f48fb1; 
-            border: 2px solid #f48fb1; 
-            border-radius: 16px; 
-            text-decoration: none;
-            box-sizing: border-box;
-            font-weight: bold;
-            font-size: 15px;
-            transition: all 0.2s ease;
+            display: inline-block !important;
+            width: 100% !important;
+            padding: 15px !important;
+            background: transparent !important;
+            color: #f48fb1 !important;
+            border: 2px solid #f48fb1 !important;
+            border-radius: 16px !important;
+            text-decoration: none !important;
+            box-sizing: border-box !important;
+            font-weight: bold !important;
+            font-size: 15px !important;
+            transition: all 0.2s ease !important;
         }
-        .reg-btn:hover { background: #f48fb1; color: white; }
-        .error-msg { color: #e11d48; background: #fff1f2; padding: 12px; border-radius: 12px; font-size: 14px; margin-bottom: 20px; border: 1px solid #ffe4e6; }
+        .reg-btn:hover {
+            background: #f48fb1 !important;
+            color: white !important;
+        }
+        .error-msg { color: #e11d48 !important; background: #fff1f2 !important; padding: 12px !important; border-radius: 12px !important; font-size: 14px !important; margin-bottom: 20px !important; border: 1px solid #ffe4e6 !important; }
     </style>
 </head>
 <body>
@@ -164,9 +155,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Welcome Back</h2>
         <p class="subtitle">Log in to manage your inventory space</p>
         
-        <?php if(!empty($message)) echo "<div class='error-msg'>$message</div>"; ?>
+        <?php if($message) echo "<div class='error-msg'>$message</div>"; ?>
         
-        <form action="login.php" method="POST">
+        <form method="POST">
             <input type="text" name="username" placeholder="Username" required>
             
             <div class="password-wrapper">
