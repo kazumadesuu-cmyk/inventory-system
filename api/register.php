@@ -14,24 +14,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Check if username already exists
-        $checkStmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
-        $checkStmt->bind_param("s", $username);
-        $checkStmt->execute();
-        $checkStmt->store_result();
+        // Safety wrapper matching your login.php file to handle serverless database states
+        if (isset($conn)) {
+            // Check if username already exists
+            $checkStmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+            $checkStmt->bind_param("s", $username);
+            $checkStmt->execute();
+            $checkStmt->store_result();
 
-        if ($checkStmt->num_rows > 0) {
-            $message = "Username is already taken!";
-        } else {
-            $stmt = $conn->prepare("INSERT INTO users (username, business_type, password) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $username, $business_type, $hashed_password);
-            
-            if ($stmt->execute()) {
-                $success = "Account created successfully! Redirecting...";
-                header("refresh:2;url=login.php");
+            if ($checkStmt->num_rows > 0) {
+                $message = "Username is already taken!";
             } else {
-                $message = "Something went wrong. Please try again.";
+                $stmt = $conn->prepare("INSERT INTO users (username, business_type, password) VALUES (?, ?, ?)");
+                $stmt->bind_param("sss", $username, $business_type, $hashed_password);
+                
+                if ($stmt->execute()) {
+                    $success = "Account created successfully! Redirecting...";
+                    header("refresh:2;url=login.php");
+                } else {
+                    $message = "Something went wrong. Please try again.";
+                }
             }
+        } else {
+            $message = "Database connection offline.";
         }
     }
 }
@@ -88,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             outline: none;
         }
         
-        /* Exact text "Show" button styling matching login page */
+        /* Text "Show" button positioning and styling */
         .toggle-password {
             position: absolute;
             right: 15px;
@@ -183,7 +188,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-        // Exact script logic from your login page applied here
         function togglePassword(inputId, element) {
             var input = document.getElementById(inputId);
             if (input.type === "password") {
