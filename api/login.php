@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include __DIR__ . '/db.php';
 session_start();
 $message = "";
 
@@ -7,22 +7,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    try {
+        // Fetch the user details directly from your Firebase 'users' node
+        $userData = firebase_request("users/" . urlencode($username));
 
-    if ($user = $result->fetch_assoc()) {
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $username;
-            header("Location: dashboard.php");
-            exit;
+        if ($userData !== null) {
+            // Verify the password matches the hashed password saved in Firebase
+            if (password_verify($password, $userData['password'])) {
+                $_SESSION['user_id'] = $username; // Use username as unique identifier
+                $_SESSION['username'] = $username;
+                header("Location: dashboard.php");
+                exit;
+            } else {
+                $message = "Oops! Wrong password.";
+            }
         } else {
-            $message = "Oops! Wrong password.";
+            $message = "We couldn't find that user.";
         }
-    } else {
-        $message = "We couldn't find that user.";
+    } catch (Exception $e) {
+        $message = "Database connection offline.";
     }
 }
 ?>
@@ -32,7 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Welcome - Inventory System</title>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { 
             font-family: 'Comfortaa', 'Segoe UI', Arial, sans-serif; 
@@ -63,7 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input { 
             width: 100%; 
             padding: 16px; 
-            padding-right: 50px; /* Extends padding so text never overlaps the eye icon */
             margin: 12px 0; 
             border: 2px solid #fff1f2; 
             border-radius: 16px; 
@@ -80,20 +81,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             outline: none;
         }
         
-        /* Modern icon placement settings */
         .toggle-password {
             position: absolute;
-            right: 20px;
+            right: 15px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #b1bccc;
-            font-size: 16px;
+            color: #718096;
+            font-size: 12px;
             user-select: none;
-            transition: color 0.2s ease;
-        }
-        .toggle-password:hover {
-            color: #f48fb1; /* Icon turns pink when hovered */
+            background: #ffe4e6;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: bold;
         }
         
         button.submit-btn { 
@@ -162,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <div class="password-wrapper">
                 <input type="password" id="login-pass" name="password" placeholder="Password" required>
-                <i class="fa-regular fa-eye toggle-password" id="eye-icon" onclick="togglePassword()"></i>
+                <span class="toggle-password" onclick="togglePassword('login-pass', this)">Show</span>
             </div>
             
             <button type="submit" class="submit-btn">Log In</button>
@@ -174,20 +174,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-        function togglePassword() {
-            var input = document.getElementById("login-pass");
-            var icon = document.getElementById("eye-icon");
-            
+        function togglePassword(inputId, element) {
+            var input = document.getElementById(inputId);
             if (input.type === "password") {
                 input.type = "text";
-                // Changes the icon to a slashed eye when password is shown
-                icon.classList.remove("fa-regular", "fa-eye");
-                icon.classList.add("fa-solid", "fa-eye-slash");
+                element.textContent = "Hide";
             } else {
                 input.type = "password";
-                // Changes it back to a standard regular eye when hidden
-                icon.classList.remove("fa-solid", "fa-eye-slash");
-                icon.classList.add("fa-regular", "fa-eye");
+                element.textContent = "Show";
             }
         }
     </script>
